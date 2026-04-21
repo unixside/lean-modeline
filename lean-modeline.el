@@ -1,7 +1,7 @@
-(require 'svg)
+;; Package-Requires: ((nerd-icons "0.1.0") (emacs "27.1"))
 
-(when (featurep 'nerd-icons)
-  (require 'nerd-icons))
+(require 'svg)
+(require 'nerd-icons)
 
 (defun lean/get-prefix-inherit-face ()
   (cond (buffer-read-only    'font-lock-comment-face)
@@ -83,7 +83,7 @@
    '(mode-line-active ((t (:inverse-video t :box nil :height 0.1))))
    '(mode-line-inactive ((t (:box nil :height 0.1))))))
 
-(define-minor-mode lean/header-line-mode
+(define-minor-mode lean-modeline-mode
   "Minor mode for haeder-line."
   :global t
   :init-value nil
@@ -91,4 +91,4 @@
       (setq-default header-line-format '(:eval (lean/header-line-format)))
     (setq-default header-line-format nil)))
 
-(provide 'lean-header-line)
+(provide 'lean-modeline)
