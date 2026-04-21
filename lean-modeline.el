@@ -1,5 +1,4 @@
 ;; Package-Requires: ((nerd-icons "0.1.0") (emacs "27.1"))
-
 (require 'svg)
 (require 'nerd-icons)
 
@@ -40,7 +39,7 @@
   (let* ((buffer-name (if (and buffer-file-name
                                (< (length buffer-file-name) (/ (window-width) 2)))
                           (abbreviate-file-name buffer-file-name)
-                        (buffer-name))))
+                        (format " %s " (buffer-name)))))
     (propertize buffer-name
                 'face '(:inherit header-line :weight bold :slant italic))))
 
@@ -52,7 +51,7 @@
 
 (defun lean/header-line-cursor-position ()
   "Renderer current coordinates of cursor."
-  (propertize (format-mode-line "%c:%l ")
+  (propertize (format-mode-line "%c:%l")
               'face '(:inherit font-lock-comment-face
                                :slant italic :weight regular)))
 
@@ -87,7 +86,7 @@
   "Minor mode for haeder-line."
   :global t
   :init-value nil
-  (if lean/header-line-mode
+  (if lean-modeline-mode
       (setq-default header-line-format '(:eval (lean/header-line-format)))
     (setq-default header-line-format nil)))
 
