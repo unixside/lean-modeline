@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t -*-
 ;; Package-Requires: ((nerd-icons "0.1.0") (emacs "27.1"))
 (require 'svg)
 (require 'nerd-icons)
@@ -6,6 +7,13 @@
   (cond (buffer-read-only    'font-lock-comment-face)
         ((buffer-modified-p) 'error)
         (t                   'default)))
+
+(defun lean/get-terminal-prefix ()
+  (let ((prefix (cond (buffer-read-only    " RO ")
+                      ((buffer-modified-p) " ** ")
+                      (t                   " RW ")))
+        (face (lean/get-prefix-inherit-face)))
+    (propertize prefix 'face `(:inherit ,face :inverse-video t))))
 
 (defun lean/header-line-nerd-icon-prefix ()
   (let* ((face (lean/get-prefix-inherit-face))
@@ -65,9 +73,13 @@
 
 (defun lean/header-line-format ()
   "Renderer format for header-line"
-  (let* ((position (lean/header-line-cursor-position))
-         (reserve (length position)))
-    (concat (lean/header-line-nerd-icon-prefix)
+  (let* ((prefix-format (if (display-graphic-p)
+                            (lean/header-line-nerd-icon-prefix)
+                          (lean/get-terminal-prefix)))
+         (position (lean/header-line-cursor-position))
+         (reserve (length position))
+         (reserve (if (not (display-graphic-p)) (+ reserve 1) reserve)))
+    (concat prefix-format
             (lean/header-line-buffer-name)
             (lean/header-line-vc-branch)
             (lean/header-line-right-align reserve)
@@ -77,10 +89,14 @@
   "Renderer mode-line as thin line."
   (interactive)
   (setq-default mode-line-format (list ""))
-  (custom-set-faces
-   '(mode-line ((t (:inverse-video t :box nil :height 0.1))))
-   '(mode-line-active ((t (:inverse-video t :box nil :height 0.1))))
-   '(mode-line-inactive ((t (:box nil :height 0.1))))))
+  (if (display-graphic-p)
+      (progn (custom-set-faces
+              '(mode-line ((t (:inverse-video t :box nil :height 0.1))))
+              '(mode-line-active ((t (:inverse-video t :box nil :height 0.1))))
+              '(mode-line-inactive ((t (:box nil :height 0.1))))))
+    (set-face-background 'mode-line "unspecified-bg")
+    (set-face-background 'mode-line-active "unspecified-bg")
+    (set-face-background 'mode-line-inactive "unspecified-bg")))
 
 (define-minor-mode lean-modeline-mode
   "Minor mode for haeder-line."
