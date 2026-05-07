@@ -59,7 +59,7 @@
 
 (defun lean/header-line-cursor-position ()
   "Renderer current coordinates of cursor."
-  (propertize (format-mode-line "%c:%l")
+  (propertize (format-mode-line "%c:%l ")
               'face '(:inherit font-lock-comment-face
                                :slant italic :weight regular)))
 
