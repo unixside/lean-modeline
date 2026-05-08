@@ -31,14 +31,13 @@
          (icon (substring-no-properties (nerd-icons-icon-for-buffer)))
          (icon (or icon #xe632))
          (font-size (font-get (face-attribute 'default :font) :size))
-         (width (* font-size 2.1))
-         (height (* font-size 2.05))
+         (width (* font-size 2.1 lean/font-scale))
+         (height (* font-size 2.05 lean/font-scale))
          (svg (svg-create width height)))
-    ;; transparent svg 
     (svg-rectangle svg 0 0 width height :fill background :stroke background)
     (svg-text svg icon
               :font-family nerd-icons-font-family
-              :font-size (* font-size 1.5)
+              :font-size (* font-size 1.5 lean/font-scale)
               :fill color
               :x (/ width 2.0)
               :y (/ height 2.0)
@@ -86,7 +85,7 @@
                             (lean/header-line-nerd-icon-prefix)
                           (lean/get-terminal-prefix)))
          (position (lean/header-line-cursor-position))
-         (reserve (length position))
+         (reserve (* (length position) lean/font-scale))
          (reserve (if (not (display-graphic-p)) (+ reserve 1) reserve)))
     (concat prefix-format
             (lean/header-line-buffer-name)
