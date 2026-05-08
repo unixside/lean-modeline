@@ -3,6 +3,15 @@
 (require 'svg)
 (require 'nerd-icons)
 
+(defgroup lean-modeline nil
+  "Lean modeline configuration."
+  :group 'modeline)
+
+(defcustom lean/font-scale 1.2
+  "Font scale factor for text elements in the modeline."
+  :type 'float
+  :group 'lean-modeline)
+
 (defun lean/get-prefix-inherit-face ()
   (cond (buffer-read-only    'font-lock-comment-face)
         ((buffer-modified-p) 'error)
@@ -13,7 +22,7 @@
                       ((buffer-modified-p) " ** ")
                       (t                   " RW ")))
         (face (lean/get-prefix-inherit-face)))
-    (propertize prefix 'face `(:inherit ,face :inverse-video t))))
+    (propertize prefix 'face `(:inherit ,face :inverse-video t :height ,lean/font-scale))))
 
 (defun lean/header-line-nerd-icon-prefix ()
   (let* ((face (lean/get-prefix-inherit-face))
@@ -49,27 +58,27 @@
                           (abbreviate-file-name buffer-file-name)
                         (format " %s " (buffer-name)))))
     (propertize buffer-name
-                'face '(:inherit header-line :weight bold :slant italic))))
+                'face `(:inherit header-line :weight bold :slant italic :height ,lean/font-scale))))
 
 (defun lean/header-line-buffer-mode ()
   "Renderer `mode-name' from current buffer."
   (let* ((mode (format "(%s)" (substring-no-properties
                                (format-mode-line mode-name)))))
-    (propertize mode 'face '(:inherit shadow :slant italic :weight light))))
+    (propertize mode 'face `(:inherit shadow :slant italic :weight light :height ,lean/font-scale))))
 
 (defun lean/header-line-cursor-position ()
   "Renderer current coordinates of cursor."
   (propertize (format-mode-line "%c:%l ")
-              'face '(:inherit font-lock-comment-face
-                               :slant italic :weight regular)))
+              'face `(:inherit font-lock-comment-face
+                               :slant italic :weight regular :height ,lean/font-scale)))
 
 (defun lean/header-line-vc-branch ()
   "TODO: docstring."
   (let ((branch (when vc-mode (substring-no-properties vc-mode))))
     (if branch
-        (propertize branch 'face '(:inherit font-lock-comment-face
-                                            :weight light :slant normal))
-      (char-to-string ?\s))))
+        (propertize branch 'face `(:inherit font-lock-comment-face
+                                            :weight light :slant normal :height ,lean/font-scale)))
+      (char-to-string ?\s)))
 
 (defun lean/header-line-format ()
   "Renderer format for header-line"
