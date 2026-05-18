@@ -16,8 +16,13 @@
 ;;   - Optional thin mode-line rendering
 ;;
 ;; Installation:
+;;   - With straight.el
+;;   (straight-use-package
+;;     '(lean-modeline :type git :host github :repo "unixside/lean-modeline"))
+;; 
+;;   - With straight.el + use-package
 ;;   (use-package lean-modeline
-;;     :straight (lean-modeline :type git :host github :repo "lean/lean-modeline"))
+;;     :straight (:type git :host github :repo "unixside/lean-modeline"))
 ;;   or manually place in load-path and (require 'lean-modeline)
 ;;
 ;; Basic Usage:
@@ -30,7 +35,7 @@
 ;; Prefix Styles:
 ;;   - 'lean/nano-ui-prefix        : Text-based prefix (RO/**/RW) with SVG background
 ;;   - 'lean/bespoke-ui-prefix     : Circle characters (◯/⨀/⨂) with SVG background
-;;   - 'lean/header-line-nerd-icon-prefix : Nerd Fonts icon for current buffer type
+;;   - 'lean/nerd-icon-prefix      : Nerd Fonts icon for current buffer type
 ;;
 ;;   Example: (setq lean-modeline-prefix-function 'lean/bespoke-ui-prefix)
 ;;
@@ -49,8 +54,8 @@
 (defcustom lean-modeline-icon-scale-factor 1.2
   "Scale factor for icons in the header-line prefix.
 This value multiplies the base font size when rendering icon-based
-prefixes such as `lean/header-line-nerd-icon-prefix' and
-`lean/bespoke-ui-prefix'. Higher values produce larger icons."
+prefixes such as `lean/nerd-icon-prefix' and
+`lean/bespoke-ui-prefix'  . Higher values produce larger icons."
   :type 'float
   :group 'lean-modeline)
 
@@ -78,7 +83,7 @@ header-line, which displays buffer state information.
 Available built-in functions:
   - `lean/nano-ui-prefix'      : Text-based (RO/**/RW) with inverted colors
   - `lean/bespoke-ui-prefix'   : Circle characters (◯/⨀/⨂) with inverted colors
-  - `lean/header-line-nerd-icon-prefix' : Nerd Fonts icon matching buffer type
+  - `lean/nerd-icon-prefix' : Nerd Fonts icon matching buffer type
 
 Custom functions should accept no arguments and return a string or
 image suitable for display in the header-line."
@@ -134,7 +139,7 @@ Returns a string indicating the current buffer's state:
 (defun lean/get-terminal-prefix ()
   "Return the terminal-style prefix string with appropriate face.
 This function is used when Emacs is running in a non-graphical
-terminal. It renders the nano-style prefix (RO/**/RW) with inverse
+terminal  . It renders the nano-style prefix (RO/**/RW) with inverse
 video styling and scaled font size for better visibility."
   (let ((prefix (lean/get-nano-prefix))
         (face (lean/get-prefix-inherit-face)))
@@ -184,7 +189,7 @@ video styling and scaled font size for better visibility."
      :dominant-baseline "central")
     (propertize " " 'display (svg-image svg :ascent 'center))))
 
-(defun lean/header-line-nerd-icon-prefix ()
+(defun lean/nerd-icon-prefix ()
   "Render the header-line prefix using a Nerd Fonts icon.
 Uses `nerd-icons-icon-for-buffer' to select an appropriate icon
 matching the current buffer's major mode (e.g.,.el for Emacs Lisp,
@@ -224,9 +229,9 @@ Returns a Unicode circle symbol indicating the current buffer's state:
 (defun lean/bespoke-ui-prefix ()
   "Render the bespoke-style prefix as an SVG image.
 Creates a square SVG containing a circle character that indicates
-the buffer's state (read-only/modified/normal). The icon uses inverted
+the buffer's state (read-only/modified/normal)  . The icon uses inverted
 colors from the current face - background becomes foreground and vice
-versa. This creates a distinctive visual style similar to nanoUi's
+versa  . This creates a distinctive visual style similar to nanoUi's
 header-line appearance."
   (let* ((face (lean/get-prefix-inherit-face))
          (foreground (plist-get face :background))
@@ -249,8 +254,8 @@ header-line appearance."
 (defun lean/nano-ui-prefix ()
   "Render the nano-style prefix as an SVG image.
 Creates a square SVG containing the nano-style text prefix (RO/**/RW)
-that indicates the buffer's state. Uses inverted colors from the
-current face for high contrast. This is the default prefix rendering
+that indicates the buffer's state . Uses inverted colors from the
+current face for high contrast . This is the default prefix rendering
 function and provides a clean, minimal appearance."
   (let* ((face (lean/get-prefix-inherit-face))
          (foreground (plist-get face :background))
@@ -273,7 +278,7 @@ function and provides a clean, minimal appearance."
 (defun lean/header-line-right-align (reserve-area)
   "Insert right-aligning whitespace in the header-line.
 RESERVE-AREA is the number of character positions to reserve for the
-rightmost element (typically the cursor position display). This
+rightmost element (typically the cursor position display)  . This
 ensures the right-side content stays aligned to the edge of the
 window regardless of the prefix and buffer name width."
   (propertize " "
